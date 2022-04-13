@@ -1,10 +1,12 @@
-#define Firmware 1.7
-#define stepperspeed 1200
-#define speedtime 1000
+#define Firmware 1.7        // Firmware
+
+#define stepperspeed 1200   // Geschwindigkeit Schrittmotor
+#define steppertime 1000    // Dauer Schrittmotor
+#define stepperforce 800    // Kraft Schrittmotor
 
 #include <AccelStepper.h>
 #include <EEPROM.h>
-//              1/4 umdrehung = stepper.move(800);
+
 
 #define pin12 12      //  Relais / Stepper pin   SHCP  / Pul
 #define pin11 11      //  Relais / Stepper pin   STCP  / Dir        L
@@ -28,9 +30,6 @@ int C1 = 1;
 int C2 = 1;
 int L = 1;
 int CONN = 0;
-
-int MotorL = 0;
-int MotorC = 0;
 
 unsigned long Lnew = 0;
 unsigned long Lstep = 0;
@@ -78,11 +77,11 @@ void setup() {
   pinMode(A7, INPUT_PULLUP);  //  SWR
   
   stepperL.setMaxSpeed(stepperspeed);           // Geschwindigkeit pro Sekunde 
-  stepperL.setAcceleration(speedtime);          // Beschleunigung in Schritten pro Sekunde.
+  stepperL.setAcceleration(steppertime);          // Beschleunigung in Schritten pro Sekunde.
   stepperC1.setMaxSpeed(stepperspeed);          // Geschwindigkeit pro Sekunde 
-  stepperC1.setAcceleration(speedtime);         // Beschleunigung in Schritten pro Sekunde.
+  stepperC1.setAcceleration(steppertime);         // Beschleunigung in Schritten pro Sekunde.
   stepperC2.setMaxSpeed(stepperspeed);          // Geschwindigkeit pro Sekunde 
-  stepperC2.setAcceleration(speedtime);         // Beschleunigung in Schritten pro Sekunde.
+  stepperC2.setAcceleration(steppertime);         // Beschleunigung in Schritten pro Sekunde.
 
 
   digitalWrite(10, HIGH);
@@ -142,22 +141,22 @@ void RS485() {
 
 void Funktionstest() {
   delay(1000);
-  stepperL.move(800);
+  stepperL.move(stepperforce);
   stepperL.runToPosition();
   delay(800);
-  stepperL.move(-800);
+  stepperL.move(-stepperforce);
   stepperL.runToPosition();
   delay(800);
-  stepperC1.move(800);
+  stepperC1.move(stepperforce);
   stepperC1.runToPosition();
   delay(800);
-  stepperC1.move(-800);
+  stepperC1.move(-stepperforce);
   stepperC1.runToPosition();
   delay(800);
-  stepperC2.move(800);
+  stepperC2.move(stepperforce);
   stepperC2.runToPosition();
   delay(800);
-  stepperC2.move(-800);
+  stepperC2.move(-stepperforce);
   stepperC2.runToPosition();
   delay(800);
   digitalWrite(10, HIGH);
@@ -191,7 +190,7 @@ void Schrittmotor() {
     if (C1 < Serialport) {
         C1++;
         digitalWrite(7, LOW);
-        stepperC1.move(800);
+        stepperC1.move(stepperforce);
         stepperC1.runToPosition();
         digitalWrite(7, HIGH);
         EEPROM.put(50, C1);
@@ -199,7 +198,7 @@ void Schrittmotor() {
     if (C1 > Serialport) {
         C1--;
         digitalWrite(7, LOW);
-        stepperC1.move(-800);
+        stepperC1.move(-stepperforce);
         stepperC1.runToPosition();
         digitalWrite(7, HIGH);
         EEPROM.put(50, C1);
@@ -216,7 +215,7 @@ void Schrittmotor() {
         C2++;
         delay(25);
         digitalWrite(4, LOW);
-        stepperC2.move(800);
+        stepperC2.move(stepperforce);
         stepperC2.runToPosition();
         digitalWrite(4, HIGH);
         EEPROM.put(60, C2);
@@ -225,7 +224,7 @@ void Schrittmotor() {
         C2--;
         delay(25);
         digitalWrite(4, LOW);
-        stepperC2.move(-800);
+        stepperC2.move(-stepperforce);
         stepperC2.runToPosition();
         digitalWrite(4, HIGH);
         EEPROM.put(60, C2);
@@ -241,7 +240,7 @@ void Schrittmotor() {
       if (L < Serialport) {
         L++;
         digitalWrite(10, LOW);
-        stepperL.move(800);
+        stepperL.move(stepperforce);
         stepperL.runToPosition();
         digitalWrite(10, HIGH);
         EEPROM.put(70, L);
@@ -250,7 +249,7 @@ void Schrittmotor() {
         L--;
         delay(25);        
         digitalWrite(10, LOW);
-        stepperL.move(-800);
+        stepperL.move(-stepperforce);
         stepperL.runToPosition();
         digitalWrite(10, HIGH);
         EEPROM.put(70, L);
@@ -266,7 +265,7 @@ void Schrittmotor() {
     if (Serial.read() == 'F') {
       if (Serialport > C1) {
         C1new = C1 - Serialport;
-        C1step = (800 * C1new);
+        C1step = (stepperforce * C1new);
         C1 = Serialport;
         delay(25);
         digitalWrite(7, LOW);
@@ -279,7 +278,7 @@ void Schrittmotor() {
       }
       if (Serialport < C1) {
         C1new = Serialport - C1;
-        C1step = 800 * C1new;
+        C1step = stepperforce * C1new;
         C1 = Serialport;
         delay(15);
         digitalWrite(7, LOW);
@@ -300,7 +299,7 @@ void Schrittmotor() {
     if (Serial.read() == 'F') {
       if (Serialport > C2) {
         C2new = C2 - Serialport;
-        C2step = (800 * Lnew);
+        C2step = (stepperforce * Lnew);
         C2 = Serialport;
         delay(25);
         digitalWrite(4, LOW);
@@ -313,7 +312,7 @@ void Schrittmotor() {
       }
       if (Serialport < C2) {
         C2new = Serialport - C2;
-        C2step = 800 * C2new;
+        C2step = stepperforce * C2new;
         C2 = Serialport;
         delay(25);
         digitalWrite(4, LOW);
@@ -334,7 +333,7 @@ void Schrittmotor() {
     if (Serial.read() == 'F') {
       if (Serialport > L) {
         Lnew = L - Serialport;
-        Lstep = (800 * Lnew);
+        Lstep = (stepperforce * Lnew);
         L = Serialport;
         delay(25);
         digitalWrite(10, LOW);
@@ -347,7 +346,7 @@ void Schrittmotor() {
       }
       if (Serialport < L) {
         Lnew = Serialport - L;
-        Lstep = 800 * Lnew;
+        Lstep = stepperforce * Lnew;
         L = Serialport;
         delay(15);
         digitalWrite(10, LOW);

@@ -1,4 +1,4 @@
-# TOAC Projekt - DO4KGT & DL1KT
+# TOAC Projekt - DO4KGT
 
 Tobias Ossig Automatic Coupler for Relay or Stepper Control
 

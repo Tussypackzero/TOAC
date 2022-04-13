@@ -2,7 +2,7 @@
 
 #define stepperspeed 1200   // Geschwindigkeit Schrittmotor
 #define steppertime 1000    // Dauer Schrittmotor
-#define stepperforce 800    // Kraft Schrittmotor
+#define stepperforce 800    // Schritte Schrittmotor
 
 #include <AccelStepper.h>
 #include <EEPROM.h>

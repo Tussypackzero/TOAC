@@ -308,21 +308,20 @@ void setup() {
 void RS485() {
   ft = EEPROM.read(906);    // Funtionstest
   bm = EEPROM.read(908);    // Bauteile
-  if (Serial.available()  > 0) {
+  if (Serial.available()  > 0) {              //    Diagnose-Serial
     Serialport0 = Serial.read();
     //Serial.print(Serialport0);
   }
-  if (Serial1.available() > 0) {
+  if (Serial1.available() > 0) {              //    Display-Serial
     char Serialport1 = Serial1.read();
     //Serial.print(Serialport1);
   }
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 8; i++) {                   //    TRX-Serial
     if (Serial2.available() > 0) {
       TRXCAT[i] = Serial2.read();
-      //String byte_string = String(TRXCAT[i], HEX);
     }
   }
-  if (Serial3.available() > 0) {
+  if (Serial3.available() > 0) {              //    Tuner-Serial
     Serialport3 = Serial3.read();
     Serial.print(Serialport3);
   }
@@ -343,7 +342,7 @@ void RS485() {
         Serial1.write(0x22);
         Serial1.write(NexT, 3);
         delay(2000);
-        if (bm == 0) {          //    2 Bauteile
+        if (bm == 0) {         //    2 Bauteile
           if (ft == 0) {
             Serial3.print('E');
             Serial3.print(0);
@@ -431,14 +430,14 @@ void RS485() {
             Serial1.write(NexT, 3);
             Serial1.print("t1.txt=");
             Serial1.write(0x22);
-            Serial1.print("L Motor   /   C Motor ");
+            Serial1.print("C Motor / L Motor / C Motor");
             Serial1.write(0x22);
             Serial1.write(NexT, 3);
             Serial3.print('E');
             Serial3.print(0);
             Serial3.print('F');
 
-            delay(11000);
+            delay(5000);
 
             Serial1.print("page 2");
             Serial1.write(0xff);
@@ -495,6 +494,7 @@ void RS485() {
 }
 
 void Display() {
+  ft = EEPROM.read(906);    // Funtionstest
   bm = EEPROM.read(908);    // Bauteile
   FREQWechsel = QRGcomp;
   Auto = 0;  

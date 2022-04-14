@@ -1900,8 +1900,8 @@ void b6PopCallback(void *ptr)  // Config
   bm = 0;
 
   tv = EEPROM.read(900);
-  cv = EEPROM.read(901);
-  tm = EEPROM.read(902);
+  cv = EEPROM.read(902);
+  tm = EEPROM.read(904);
   ft = EEPROM.read(906);
   bm = EEPROM.read(908);
 
@@ -3369,7 +3369,7 @@ void bs8PopCallback(void *ptr)  // Tuner Model Stepper
 
   if (number5 == 1) {  // If dual state button is equal to 1 (meaning is ON)...
 
-    EEPROM.put (902, 0);
+    EEPROM.put (904, 0);
     
     Serial1.print("bs8.val=1"); 
     Serial1.write(NexT, 3);
@@ -3410,7 +3410,7 @@ void bs9PopCallback(void *ptr)  // Tuner Model Relais
 
   if (number5 == 1) {  // If dual state button is equal to 1 (meaning is ON)...
 
-    EEPROM.put (902, 1);
+    EEPROM.put (904, 1);
 
     Serial1.print("bs8.val=0"); 
     Serial1.write(NexT, 3);
@@ -3840,8 +3840,8 @@ void n5PopCallback(void *ptr)   // Tuner Reset
     Serial1.write(NexT, 3);
 
     EEPROM.put(900, 99);
-    EEPROM.put(901, 99);
     EEPROM.put(902, 99);
+    EEPROM.put(904, 99);
     EEPROM.put(906, 99);
     EEPROM.put(908, 99);
 

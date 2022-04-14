@@ -2,7 +2,7 @@
 
 #define stepperspeed 1200   // Geschwindigkeit Schrittmotor
 #define steppertime 1000    // Dauer Schrittmotor
-#define stepperforce 800    // Schritte Schrittmotor
+#define stepperforce 800    // Kraft Schrittmotor
 
 #include <AccelStepper.h>
 #include <EEPROM.h>
@@ -398,7 +398,7 @@ void Schrittmotor() {
     Serialport = Serial.parseInt();
     if (Serial.read() == 'F') {
       if (Serialport == 9) {  // OK
-        RS485();
+        setup();
       }
     }
   }

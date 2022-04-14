@@ -306,6 +306,7 @@ void setup() {
   Serial1.print(Firmware_v);
   Serial1.write(0x22);
   Serial1.write(NexT, 3);
+  Restart = 0;
   RS485();
 }
 

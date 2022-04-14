@@ -591,14 +591,14 @@ void Display() {
     
     }
   }
-  if (Serialport3 == 'S') { //    L
+  if (Serialport3 == 'S') {                   //    Restart Tuner
     Serialport3 = Serial3.parseInt();
     if (Serial3.read() == 'F') {
       if (Serialport3 == 1) {
         
         Restart ++;
 
-        if (Restart == 3) {
+        if (Restart >= 3) {
         Serial1.print("page 5");
         Serial1.write(0xff);
         Serial1.write(0xff);

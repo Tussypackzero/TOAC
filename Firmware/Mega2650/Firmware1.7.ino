@@ -126,8 +126,11 @@ NexTouch *nex_lock_list[] = {
   NULL  // String terminated
 };
 
+unsigned long Tunerrestart = 0;
+#define Tuner_delay 2500
+
 unsigned long Tunerdelay = 0;
-#define Tuner_delay 1000
+#define Tuner_restart 1000
 
 unsigned long Bandtrx = 0;
 #define Band_trx 500
@@ -362,8 +365,7 @@ void RS485() {
             Serial1.write(0x22);
             Serial1.write(NexT, 3);
             Display();
-          }
-          else if (ft == 1) {
+          } else {
             Serial1.print("t0.txt=");
             Serial1.write(0x22);
             Serial1.print("  Selbsttest  ");
@@ -422,7 +424,7 @@ void RS485() {
             Serial1.write(0x22);
             Serial1.write(NexT, 3);
             Display();
-          } else if (ft == 1) {
+          } else {
             Serial1.print("t0.txt=");
             Serial1.write(0x22);
             Serial1.print("  Selbsttest  ");
@@ -488,6 +490,13 @@ void RS485() {
         }
       }
     }
+  }
+  if (millis() - Tunerrestart >= Tuner_restart) {         //    Tuner Restart,
+    Tunerrestart = millis();
+    millis();
+    Serial3.print('E');
+    Serial3.print(9);
+    Serial3.print('F');
   }
   nexLoop(nex_listen_Display1);
   RS485();

@@ -178,6 +178,7 @@ int   Manual = 1;     //  Manual-Automatik Umschaltung
 int     Band = 0;       //  Banddekoder 
 int Diagnose = 1;   //  Diagnoseport
 int    Setup = 0;
+int  Restart = 0;
 
 void setup() {
  
@@ -588,6 +589,35 @@ void Display() {
       Serial1.write(NexT, 3); 
 
     
+    }
+  }
+  if (Serialport3 == 'S') { //    L
+    Serialport3 = Serial3.parseInt();
+    if (Serial3.read() == 'F') {
+      if (Serialport3 == 1) {
+        
+        Restart ++;
+
+        if (Restart == 3) {
+        Serial1.print("page 5");
+        Serial1.write(0xff);
+        Serial1.write(0xff);
+        Serial1.write(0xff);
+    
+        Serial1.print("t2.txt=");
+        Serial1.write(0x22);
+        Serial1.print("Firmware ");
+        Serial1.print(Firmware_v);
+        Serial1.write(0x22);
+        Serial1.write(NexT, 3);
+
+    digitalWrite(5, HIGH);     //  Reset OUT
+    delay(2500);
+    digitalWrite(5, LOW);      //  Reset OUT
+
+    setup();
+        }
+      }
     }
   }
   if (digitalRead(6) == LOW) {                //    PTT-Switch

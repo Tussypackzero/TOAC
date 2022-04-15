@@ -29,7 +29,6 @@ int Serialport = 0;
 int C1 = 1;
 int C2 = 1;
 int L = 1;
-int CONN = 0;
 
 unsigned long Lnew = 0;
 unsigned long Lstep = 0;
@@ -92,7 +91,7 @@ void RS485() {
   if (Serial.available() > 0) {
     Serialport = Serial.read();
   }
-  if (CONN == 0 & millis() - verbindung >= verb_indung) {  // Verbindungsaufbau
+  if (millis() - verbindung >= verb_indung) {  // Verbindungsaufbau
     verbindung = millis();
     millis();
     Serial.print('S');
@@ -103,7 +102,6 @@ void RS485() {
     Serialport = Serial.parseInt();
     if (Serial.read() == 'F') {
       if (Serialport == 0) {
-        CONN = 1;
         delay(500);
         digitalWrite(10, HIGH);
         digitalWrite(7, HIGH);
@@ -135,7 +133,6 @@ void RS485() {
       }
     }
   }
-  CONN = 0;
   RS485();
 }
 

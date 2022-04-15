@@ -126,20 +126,21 @@ NexTouch *nex_lock_list[] = {
   NULL  // String terminated
 };
 
+unsigned long steppertest = 0;
+#define stepper_test 10000
+
 unsigned long Tunerrestart = 0;
-#define Tuner_delay 2500
+#define Tuner_restart 2500
+
 
 unsigned long Tunerdelay = 0;
-#define Tuner_restart 1000
+#define Tuner_delay 1000
 
 unsigned long Bandtrx = 0;
 #define Band_trx 500
 
 unsigned long Catfre = 0;
-#define Cat_fre 400
-
-unsigned long reset = 0;
-#define re_set 10000
+#define Cat_fre 750
 
 // Kommunikation
 int Serialport0;      // Selfport
@@ -181,17 +182,11 @@ int    Setup = 0;
 int  Restart = 0;
 
 void setup() {
- 
-  tv = EEPROM.read(900);    // tv Tunerverbindung
-  cv = EEPROM.read(902);    // cv Catverbindung
-  tm = EEPROM.read(904);    // tm Tuner Model
-
   Serial.begin(9600);       // Selfport
   Serial1.begin(57600);     // Display
   Serial2.begin(9600);      // TRX
   Serial3.begin(4800);      // Tuner
   Serial3.setTimeout(5);
-
 
   pinMode(A12, OUTPUT);     //  Buzzer Out
   pinMode(A13, INPUT);
@@ -288,6 +283,11 @@ void setup() {
   n4.attachPop(n4PopCallback);
   n5.attachPop(n5PopCallback);
 
+  tv = EEPROM.read(900);
+  cv = EEPROM.read(902);
+  tm = EEPROM.read(904);
+  ft = EEPROM.read(906);
+  bm = EEPROM.read(908);
   
   Serial1.print("page 0");
   Serial1.write(0xff);
@@ -311,8 +311,7 @@ void setup() {
 }
 
 void RS485() {
-  ft = EEPROM.read(906);    // Funtionstest
-  bm = EEPROM.read(908);    // Bauteile
+
   if (Serial.available()  > 0) {              //    Diagnose-Serial
     Serialport0 = Serial.read();
     //Serial.print(Serialport0);
@@ -321,21 +320,9 @@ void RS485() {
     char Serialport1 = Serial1.read();
     //Serial.print(Serialport1);
   }
-  for (i = 0; i < 8; i++) {                   //    TRX-Serial
-    if (Serial2.available() > 0) {
-      TRXCAT[i] = Serial2.read();
-    }
-  }
   if (Serial3.available() > 0) {              //    Tuner-Serial
     Serialport3 = Serial3.read();
     Serial.print(Serialport3);
-  }
-  if (millis() - reset >= re_set) {  // Verbindungsaufbau
-    reset = millis();
-    millis();
-    Serial3.print('E');
-    Serial3.print(8);
-    Serial3.println('F');
   }
   if (Serialport3 == 'S') { //    L
     Serialport3 = Serial3.parseInt();
@@ -346,126 +333,7 @@ void RS485() {
         Serial1.print("Verbindung OK");
         Serial1.write(0x22);
         Serial1.write(NexT, 3);
-        delay(2000);
-        if (bm == 0) {         //    2 Bauteile
-          if (ft == 0) {
-            Serial3.print('E');
-            Serial3.print(0);
-            Serial3.print('F');
-            Serial1.print("page 1");
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.print("t0.txt=");
-            Serial1.write(0x22);
-            Serial1.print(C1);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t1.txt=");
-            Serial1.write(0x22);
-            Serial1.print(L);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Display();
-          } else {
-            Serial1.print("t0.txt=");
-            Serial1.write(0x22);
-            Serial1.print("  Selbsttest  ");
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t1.txt=");
-            Serial1.write(0x22);
-            Serial1.print("L Motor   /   C Motor ");
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial3.print('E');
-            Serial3.print(0);
-            Serial3.print('F');
-
-            delay(11000);
-
-            Serial1.print("page 1");
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.print("t0.txt=");
-            Serial1.write(0x22);
-            Serial1.print(C1);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t1.txt=");
-            Serial1.write(0x22);
-            Serial1.print(L);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Display();
-          }
-        }
-        else if (bm == 1) {   //    3 Bauteile
-          if (ft == 0) {
-            Serial3.print('E');
-            Serial3.print(0);
-            Serial3.print('F');
-            Serial1.print("page 2");
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.print("t0.txt=");
-            Serial1.write(0x22);
-            Serial1.print(C1);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t1.txt=");
-            Serial1.write(0x22);
-            Serial1.print(L);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t2.txt=");
-            Serial1.write(0x22);
-            Serial1.print(C2);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Display();
-          } else {
-            Serial1.print("t0.txt=");
-            Serial1.write(0x22);
-            Serial1.print("  Selbsttest  ");
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t1.txt=");
-            Serial1.write(0x22);
-            Serial1.print("C Motor / L Motor / C Motor");
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial3.print('E');
-            Serial3.print(0);
-            Serial3.print('F');
-
-            delay(5000);
-
-            Serial1.print("page 2");
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.write(0xff);
-            Serial1.print("t0.txt=");
-            Serial1.write(0x22);
-            Serial1.print(C1);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t1.txt=");
-            Serial1.write(0x22);
-            Serial1.print(L);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Serial1.print("t2.txt=");
-            Serial1.write(0x22);
-            Serial1.print(C2);
-            Serial1.write(0x22);
-            Serial1.write(NexT, 3);
-            Display();
-          }
-        }
-        else if (bm >= 2) {
+          if (bm >= 2) {
           Serial1.print("page 3");
           Serial1.write(0xff);
           Serial1.write(0xff);
@@ -485,13 +353,33 @@ void RS485() {
           Serial1.write(0x22);
           Serial1.write(NexT, 3);
           delay(150);
-
           Setup = 1;
-
           Config();
+
+        } else if (bm == 0) {
+            Serial3.print('E');
+            Serial3.print(0);
+            Serial3.print('F');
+            Serial1.print("page 1");
+            Serial1.write(0xff);
+            Serial1.write(0xff);
+            Serial1.write(0xff);
+            Serial1.write(NexT, 3);
+            Display();
+        }  else if (bm == 1) {
+            Serial3.print('E');
+            Serial3.print(0);
+            Serial3.print('F');
+            Serial1.print("page 2");
+            Serial1.write(0xff);
+            Serial1.write(0xff);
+            Serial1.write(0xff);
+            Serial1.write(NexT, 3);
+            Display();
+          
         }
       }
-    }
+    } 
   }
   if (millis() - Tunerrestart >= Tuner_restart) {         //    Tuner Restart,
     Tunerrestart = millis();
@@ -1498,11 +1386,6 @@ void Display() {
   Display();
 }
 void Config (){
-  tv = EEPROM.read(900);
-  cv = EEPROM.read(901);
-  tm = EEPROM.read(902);
-  ft = EEPROM.read(906);
-  bm = EEPROM.read(908);
   if (Serial.available()  > 0) {              //    Diagnose-Serial
     Serialport0 = Serial.read();
     //Serial.print(Serialport0);

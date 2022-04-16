@@ -102,7 +102,7 @@ void RS485() {
     Serialport = Serial.parseInt();
     if (Serial.read() == 'F') {
       if (Serialport == 0) {
-        delay(500);
+        delay(750);
         digitalWrite(10, HIGH);
         digitalWrite(7, HIGH);
         digitalWrite(4, HIGH);

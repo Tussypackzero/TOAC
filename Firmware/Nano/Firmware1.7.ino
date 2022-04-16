@@ -193,7 +193,7 @@ void setup() {
   Serial.begin(9600);       // Selfport
   Serial1.begin(57600);     // Display
   if (cv >= 4 ) {           // CAT Verbindung
-      Serial2.begin(9600);
+      Serial2.begin(4800);
     } else if (cv == 0 ) {
       Serial2.begin(4800);
     } else if (cv == 1 ) {

@@ -193,7 +193,7 @@ void setup() {
   Serial.begin(9600);       // Selfport
   Serial1.begin(57600);     // Display
   if (cv >= 4 ) {           // CAT Verbindung
-      Serial2.begin(4800);
+      Serial2.begin(9600);
     } else if (cv == 0 ) {
       Serial2.begin(4800);
     } else if (cv == 1 ) {
@@ -206,7 +206,7 @@ void setup() {
 
 
   if (tv >= 4 ) {           // Tuner Verbindung
-      Serial3.begin(9600);
+      Serial3.begin(4800);
       Serial3.setTimeout(5);
     } else if (tv == 0 ) {
       Serial3.begin(4800);

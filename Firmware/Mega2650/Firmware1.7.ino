@@ -1,3 +1,4 @@
+// DL1KD 2023 - Edit
 // Einstellbare Variablen 
 #define Call "DO4KGT"
 
